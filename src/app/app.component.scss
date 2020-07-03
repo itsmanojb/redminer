@@ -50,6 +50,28 @@
     }
   }
 
+  small {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+  }
+
+  .tag {
+    padding: 4px 8px;
+    color: #9b4dca;
+    background: rgba(155, 77, 202, 0.05);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all .2s ease;
+    margin: 2px;
+
+    &:hover {
+      background-color: rgba(155, 77, 202, 0.1);
+    }
+  }
+
   form {
     padding: 2rem 2rem;
   }
@@ -112,6 +134,7 @@
       white-space: pre-wrap;
       margin: 0;
       line-height: 1.2;
+      word-break: break-word;
 
       &+p {
         margin-top: 5px;

@@ -14,6 +14,12 @@
             <fieldset>
               <!-- <label for="nameField">UserId</label> -->
               <input type="text" name="userId" [(ngModel)]="userId" placeholder="Enter employee id">
+              <p *ngIf="allUsers.length">
+                <small>
+                  <span class="tag" *ngFor="let item of allUsers">{{item.name}}</span>
+                  Recently checked:
+                </small>
+              </p>
               <input type="password" name="key" [(ngModel)]="key" placeholder="API Key">
               <p><b>Tip!</b> To find the key, log into your Redmine account, then go to <q>My Account</q>. On the right
                 you'll find access key.</p>

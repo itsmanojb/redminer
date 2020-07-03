@@ -24,6 +24,8 @@ export class AppComponent implements OnInit {
   userId = '';
   key = '66103e0fe6fb9b22e79b865835e9c0eb939e73ba';
 
+  allUsers: any[] = [];
+
   activities: any[] = [];
   formSubmitted: boolean;
   dataLoaded: boolean;
@@ -34,6 +36,8 @@ export class AppComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    const users: any[] = JSON.parse(localStorage.getItem('REDMINERS')) || [];
+    this.allUsers = users.slice(Math.max(users.length - 5, 0));
   }
 
   getActivities(e) {
@@ -63,6 +67,10 @@ export class AppComponent implements OnInit {
         }
         this.dataError = false;
         this.title = xmlDoc.getElementsByTagName("title")[0].innerHTML;
+        const author = { name: this.title.split(': ')[1], id: uid };
+        this.allUsers.push(author);
+        this.allUsers.filter((v, i) => this.allUsers.indexOf(v) !== i);
+        localStorage.setItem('REDMINERS', JSON.stringify(this.allUsers));
         this.updated = xmlDoc.getElementsByTagName("updated")[0].innerHTML;
         const activities: any = xmlDoc.getElementsByTagName("entry");
         for (let item of activities) {
@@ -106,6 +114,7 @@ export class AppComponent implements OnInit {
 
   reset() {
     this.formSubmitted = false;
+    this.title = 'Redmine Activity Tracker';
     this.userId = '';
     this.dataLoaded = false;
     this.dataError = false;
