@@ -54,8 +54,6 @@
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    flex-direction: row-reverse;
-    justify-content: flex-end;
   }
 
   .tag {
@@ -67,7 +65,14 @@
     transition: all .2s ease;
     margin: 2px;
 
-    &:hover {
+    &:first-of-type {
+      background-color: #fff;
+      color: #888;
+      cursor: default;
+      margin-left: -4px;
+    }
+
+    &:not(:first-of-type):hover {
       background-color: rgba(155, 77, 202, 0.1);
     }
   }

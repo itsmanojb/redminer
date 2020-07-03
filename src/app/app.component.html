@@ -16,8 +16,10 @@
               <input type="text" name="userId" [(ngModel)]="userId" placeholder="Enter employee id">
               <p *ngIf="allUsers.length">
                 <small>
-                  <span class="tag" *ngFor="let item of allUsers">{{item.name}}</span>
-                  Recently checked:
+                  <span class="tag">
+                    Recently checked:
+                  </span>
+                  <span class="tag" *ngFor="let item of allUsers" (click)="selectUser(item.id)">{{item.name}}</span>
                 </small>
               </p>
               <input type="password" name="key" [(ngModel)]="key" placeholder="API Key">

@@ -37,7 +37,9 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     const users: any[] = JSON.parse(localStorage.getItem('REDMINERS')) || [];
-    this.allUsers = users.slice(Math.max(users.length - 5, 0));
+    const uniq = users.filter((v, i, a) => a.findIndex(t => (t.id === v.id)) === i);
+    this.allUsers = uniq.slice(Math.max(uniq.length - 5, 0));
+
   }
 
   getActivities(e) {
@@ -69,7 +71,7 @@ export class AppComponent implements OnInit {
         this.title = xmlDoc.getElementsByTagName("title")[0].innerHTML;
         const author = { name: this.title.split(': ')[1], id: uid };
         this.allUsers.push(author);
-        this.allUsers.filter((v, i) => this.allUsers.indexOf(v) !== i);
+        this.allUsers = this.allUsers.filter((v, i, a) => a.findIndex(t => (t.id === v.id)) === i);
         localStorage.setItem('REDMINERS', JSON.stringify(this.allUsers));
         this.updated = xmlDoc.getElementsByTagName("updated")[0].innerHTML;
         const activities: any = xmlDoc.getElementsByTagName("entry");
@@ -111,6 +113,10 @@ export class AppComponent implements OnInit {
     var doc = parser.parseFromString(str, 'text/html');
     return doc.body.innerHTML;
   };
+
+  selectUser(uid: string) {
+    this.userId = uid
+  }
 
   reset() {
     this.formSubmitted = false;
