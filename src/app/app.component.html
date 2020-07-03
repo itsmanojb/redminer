@@ -5,6 +5,7 @@
 
       <div class="card__header">
         <h3>{{title}}</h3>
+        <span class="close" (click)="reset()" *ngIf="formSubmitted && dataLoaded && !dataError">&times;</span>
       </div>
 
       <div class="row" *ngIf="!dataLoaded">
@@ -28,11 +29,11 @@
           </form>
         </div>
       </div>
-      <div class="loader" *ngIf="formSubmitted && !dataLoaded">
+      <div class="loader" *ngIf="formSubmitted && !dataLoaded && !dataError">
         <img src="assets/loader.gif" alt="loading..">
       </div>
 
-      <div class="results" *ngIf="formSubmitted && dataLoaded">
+      <div class="results" *ngIf="formSubmitted && dataLoaded && !dataError">
         <h6>Last updated: {{updated | date : 'MMM d, h:mm a'}}</h6>
 
         <div id="content">

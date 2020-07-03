@@ -21,12 +21,13 @@ export class AppComponent implements OnInit {
 
   title = 'Redmine Activity Tracker';
   updated = '';
-  userId: number;
+  userId = '';
   key = '66103e0fe6fb9b22e79b865835e9c0eb939e73ba';
 
   activities: any[] = [];
   formSubmitted: boolean;
   dataLoaded: boolean;
+  dataError: boolean;
 
   constructor(
     private http: HttpClient
@@ -46,7 +47,7 @@ export class AppComponent implements OnInit {
     }
   }
 
-  getActivityOfUser(key: string, uid: number) {
+  getActivityOfUser(key: string, uid: string) {
     const url = `${proxy}/${apiRoot}/activity.atom?key=${key}&user_id=${uid}`
     this.http.get(url, { responseType: 'text' }).subscribe((res) => {
       this.dataLoaded = true;
@@ -54,6 +55,13 @@ export class AppComponent implements OnInit {
       if (window.DOMParser) {
         const parser = new DOMParser();
         const xmlDoc = parser.parseFromString(res, "text/xml");
+        if (!xmlDoc) {
+          this.dataError = true;
+          window.alert('Failed to load data. Try again later.');
+          this.formSubmitted = false;
+          return;
+        }
+        this.dataError = false;
         this.title = xmlDoc.getElementsByTagName("title")[0].innerHTML;
         this.updated = xmlDoc.getElementsByTagName("updated")[0].innerHTML;
         const activities: any = xmlDoc.getElementsByTagName("entry");
@@ -71,7 +79,11 @@ export class AppComponent implements OnInit {
         window.alert('Results cannot be displayed as, there\'s no support for XML parsing.');
       }
     }, (err) => {
-      console.log(err)
+      this.dataError = true;
+      this.formSubmitted = false;
+      window.alert('Failed to load data. Try again later.');
+      console.log(err);
+
     });
   }
 
@@ -92,5 +104,11 @@ export class AppComponent implements OnInit {
     return doc.body.innerHTML;
   };
 
+  reset() {
+    this.formSubmitted = false;
+    this.userId = '';
+    this.dataLoaded = false;
+    this.dataError = false;
+  }
 
 }
