@@ -21,18 +21,25 @@ export class AppComponent implements OnInit {
 
   title = 'Redmine Activity Tracker';
   updated = '';
-  userId: number;
+  userId = '';
   key = '66103e0fe6fb9b22e79b865835e9c0eb939e73ba';
+
+  allUsers: any[] = [];
 
   activities: any[] = [];
   formSubmitted: boolean;
   dataLoaded: boolean;
+  dataError: boolean;
 
   constructor(
     private http: HttpClient
   ) { }
 
   ngOnInit() {
+    const users: any[] = JSON.parse(localStorage.getItem('REDMINERS')) || [];
+    const uniq = users.filter((v, i, a) => a.findIndex(t => (t.id === v.id)) === i);
+    this.allUsers = uniq.slice(Math.max(uniq.length - 5, 0));
+
   }
 
   getActivities(e) {
@@ -46,7 +53,7 @@ export class AppComponent implements OnInit {
     }
   }
 
-  getActivityOfUser(key: string, uid: number) {
+  getActivityOfUser(key: string, uid: string) {
     const url = `${proxy}/${apiRoot}/activity.atom?key=${key}&user_id=${uid}`
     this.http.get(url, { responseType: 'text' }).subscribe((res) => {
       this.dataLoaded = true;
@@ -54,7 +61,18 @@ export class AppComponent implements OnInit {
       if (window.DOMParser) {
         const parser = new DOMParser();
         const xmlDoc = parser.parseFromString(res, "text/xml");
+        if (!xmlDoc) {
+          this.dataError = true;
+          window.alert('Failed to load data. Try again later.');
+          this.formSubmitted = false;
+          return;
+        }
+        this.dataError = false;
         this.title = xmlDoc.getElementsByTagName("title")[0].innerHTML;
+        const author = { name: this.title.split(': ')[1], id: uid };
+        this.allUsers.push(author);
+        this.allUsers = this.allUsers.filter((v, i, a) => a.findIndex(t => (t.id === v.id)) === i);
+        localStorage.setItem('REDMINERS', JSON.stringify(this.allUsers));
         this.updated = xmlDoc.getElementsByTagName("updated")[0].innerHTML;
         const activities: any = xmlDoc.getElementsByTagName("entry");
         for (let item of activities) {
@@ -71,7 +89,11 @@ export class AppComponent implements OnInit {
         window.alert('Results cannot be displayed as, there\'s no support for XML parsing.');
       }
     }, (err) => {
-      console.log(err)
+      this.dataError = true;
+      this.formSubmitted = false;
+      window.alert('Failed to load data. Try again later.');
+      console.log(err);
+
     });
   }
 
@@ -92,5 +114,16 @@ export class AppComponent implements OnInit {
     return doc.body.innerHTML;
   };
 
+  selectUser(uid: string) {
+    this.userId = uid
+  }
+
+  reset() {
+    this.formSubmitted = false;
+    this.title = 'Redmine Activity Tracker';
+    this.userId = '';
+    this.dataLoaded = false;
+    this.dataError = false;
+  }
 
 }

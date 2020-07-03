@@ -5,6 +5,7 @@
 
       <div class="card__header">
         <h3>{{title}}</h3>
+        <span class="close" (click)="reset()" *ngIf="formSubmitted && dataLoaded && !dataError">&times;</span>
       </div>
 
       <div class="row" *ngIf="!dataLoaded">
@@ -13,6 +14,14 @@
             <fieldset>
               <!-- <label for="nameField">UserId</label> -->
               <input type="text" name="userId" [(ngModel)]="userId" placeholder="Enter employee id">
+              <p *ngIf="allUsers.length">
+                <small>
+                  <span class="tag">
+                    Recently checked:
+                  </span>
+                  <span class="tag" *ngFor="let item of allUsers" (click)="selectUser(item.id)">{{item.name}}</span>
+                </small>
+              </p>
               <input type="password" name="key" [(ngModel)]="key" placeholder="API Key">
               <p><b>Tip!</b> To find the key, log into your Redmine account, then go to <q>My Account</q>. On the right
                 you'll find access key.</p>
@@ -28,11 +37,11 @@
           </form>
         </div>
       </div>
-      <div class="loader" *ngIf="formSubmitted && !dataLoaded">
+      <div class="loader" *ngIf="formSubmitted && !dataLoaded && !dataError">
         <img src="assets/loader.gif" alt="loading..">
       </div>
 
-      <div class="results" *ngIf="formSubmitted && dataLoaded">
+      <div class="results" *ngIf="formSubmitted && dataLoaded && !dataError">
         <h6>Last updated: {{updated | date : 'MMM d, h:mm a'}}</h6>
 
         <div id="content">
