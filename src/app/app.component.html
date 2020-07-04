@@ -5,57 +5,69 @@
 
       <div class="card__header">
         <h3>{{title}}</h3>
-        <span class="close" (click)="reset()" *ngIf="formSubmitted && dataLoaded && !dataError">&times;</span>
+        <span class="close" (click)="reset()"
+          *ngIf="formSubmitted && dataLoaded && !dataError && !htmlOutput">&times;</span>
       </div>
 
       <div class="row" *ngIf="!dataLoaded">
         <div class="column">
           <form (ngSubmit)="getActivities($event)">
             <fieldset>
-              <!-- <label for="nameField">UserId</label> -->
-              <input type="text" name="userId" [(ngModel)]="userId" placeholder="Enter employee id">
-              <p *ngIf="allUsers.length">
-                <small>
-                  <span class="tag">
-                    Recently checked:
-                  </span>
-                  <span class="tag" *ngFor="let item of allUsers" (click)="selectUser(item.id)">{{item.name}}</span>
-                </small>
-              </p>
-              <input type="password" name="key" [(ngModel)]="key" placeholder="API Key">
-              <p><b>Tip!</b> To find the key, log into your Redmine account, then go to <q>My Account</q>. On the right
-                you'll find access key.</p>
-              <!-- <label for="ageRangeField">Age Range</label>
-              <select id="ageRangeField">
-                <option value="0-13">0-13</option>
-                <option value="14-17">14-17</option>
-                <option value="18-23">18-23</option>
-                <option value="24+">24+</option>
-              </select> -->
-              <button class="button-primary" [disabled]="formSubmitted" type="submit">Submit</button>
+              <div class="inline">
+                <div>
+                  <input type="text" name="userId" [(ngModel)]="userId" placeholder="Enter employee id">
+                </div>
+                <div>
+                  <input type="password" name="key" [(ngModel)]="key" placeholder="Secret Key">
+                </div>
+                <div>
+                  <button class="button-primary" [disabled]="formSubmitted" type="submit">Submit</button>
+                </div>
+              </div>
+              <div class="error thin" *ngIf="inputError">Please enter both employee id and secret key.</div>
             </fieldset>
           </form>
+          <div class="recents">
+            <p *ngIf="allUsers.length">
+              <small>
+                <span class="tag">
+                  Recently checked:
+                </span>
+                <span class="tag" *ngFor="let item of allUsers" (click)="selectUser(item.id)">{{item.name}}</span>
+              </small>
+            </p>
+          </div>
         </div>
       </div>
       <div class="loader" *ngIf="formSubmitted && !dataLoaded && !dataError">
         <img src="assets/loader.gif" alt="loading..">
       </div>
 
-      <div class="results" *ngIf="formSubmitted && dataLoaded && !dataError">
-        <h6>Last updated: {{updated | date : 'MMM d, h:mm a'}}</h6>
-
-        <div id="content">
-          <ul class="timeline">
-            <li class="event" [attr.data-date]="item.updated | date : 'h:mm a'" *ngFor="let item of activities">
-              <h4><a [href]="item.link" target="_blank">{{item.title}}</a></h4>
-              <!-- <p *ngFor="let para of item.content" [innerHTML]="para"></p> -->
-              <div class="para" *ngFor="let para of item.content">
-                <p *ngFor="let line of para" [innerHTML]="line"></p>
-              </div>
-            </li>
-          </ul>
-        </div>
+      <div class="error" *ngIf="htmlOutput; else results">
+        <p>
+          Something's not right. It may be bacuse you're not logged in, or the Key is invalid or the employee id
+          doesn't exist. Be double sure and try again.
+        </p>
+        <button class="button button-outline" type="button" (click)="reset()">Retry</button>
       </div>
+
+      <ng-template #results>
+        <div class="results" *ngIf="formSubmitted && dataLoaded && !dataError">
+          <h6>Last updated: {{updated | date : 'MMM d, h:mm a'}}</h6>
+
+          <div id="content">
+            <ul class="timeline">
+              <li class="event" [attr.data-date]="item.updated | date : 'h:mm a'" *ngFor="let item of activities">
+                <h4><a [href]="item.link" target="_blank">{{item.title}}</a></h4>
+                <!-- <p *ngFor="let para of item.content" [innerHTML]="para"></p> -->
+                <div class="para" *ngFor="let para of item.content">
+                  <p *ngFor="let line of para" [innerHTML]="line"></p>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </ng-template>
 
     </div>
   </div>
