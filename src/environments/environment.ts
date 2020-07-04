@@ -5,7 +5,7 @@
 export const environment = {
   production: false,
   base_url: 'https://redmine.patientmd.com',
-  proxy_url: 'https://cors-anywhere.herokuapp.com'
+  proxy_url: 'https://cors-anywhere.herokuapp.com/'
 };
 
 /*

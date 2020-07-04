@@ -54,7 +54,7 @@ export class AppComponent implements OnInit {
   }
 
   getActivityOfUser(key: string, uid: string) {
-    const url = `${proxy}/${apiRoot}/activity.atom?key=${key}&user_id=${uid}`
+    const url = `${proxy}${apiRoot}/activity.atom?key=${key}&user_id=${uid}`
     this.http.get(url, { responseType: 'text' }).subscribe((res) => {
 
       if (res.startsWith('<!DOCTYPE html>')) {
