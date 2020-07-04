@@ -7,7 +7,7 @@
 }
 
 .container {
-  max-width: 1000px;
+  max-width: 900px;
 }
 
 .card {
@@ -50,6 +50,16 @@
     }
   }
 
+  .inline {
+    display: grid;
+    grid-template-columns: 1fr 1fr 110px;
+    gap: 10px;
+
+    @media screen and (max-width:600px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
   small {
     display: flex;
     flex-wrap: wrap;
@@ -78,7 +88,13 @@
   }
 
   form {
-    padding: 2rem 2rem;
+    padding: 2rem 2rem 0;
+  }
+
+  .recents {
+    margin: 0 2rem;
+    padding: 2rem 0 0;
+    border-top: 1px solid #f2f2f2;
   }
 
   .loader {
@@ -88,6 +104,18 @@
     img {
       height: 150px;
       margin-bottom: 40px;
+    }
+  }
+
+  .error {
+    padding: 2rem;
+    background: rgba(155, 77, 202, 0.05);
+    border-radius: 4px;
+    margin: 2rem;
+
+    &.thin {
+      margin: 1rem 0 0;
+      padding: 1.5rem 2rem;
     }
   }
 
